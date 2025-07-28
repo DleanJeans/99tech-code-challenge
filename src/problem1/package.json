@@ -1,0 +1,19 @@
+{
+    "name": "sum-to-n-problem",
+    "version": "1.0.0",
+    "description": "Three ways to sum to n - Problem 1",
+    "type": "module",
+    "main": "sum_to_n.js",
+    "scripts": {
+        "test": "vitest",
+        "test:run": "vitest run",
+        "test:watch": "vitest --watch",
+        "test:coverage": "vitest run --coverage"
+    },
+    "devDependencies": {
+        "@vitest/ui": "^1.6.0",
+        "vitest": "^1.6.0"
+    },
+    "author": "",
+    "license": ""
+}
