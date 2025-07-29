@@ -103,7 +103,7 @@ const TokenAmountInput: React.FC<AmountInputProps> = ({
         )}
       </div>
 
-      <div className="flex items-stretch relative" ref={dropdownRef}>
+      <div className="flex flex-col sm:flex-row sm:items-stretch relative" ref={dropdownRef}>
         <div className={`min-w-0 ${transitionClasses}`}>
           <TokenSelectorButton
             selectedToken={token}
@@ -120,7 +120,7 @@ const TokenAmountInput: React.FC<AmountInputProps> = ({
             onChange={(e) => onChange(e.target.value)}
             placeholder={placeholder}
             readOnly={readOnly}
-            className={`text-right w-full px-3 py-4 rounded-r-xl text-2xl font-semibold bg-gray-800 outline-none text-gray-200 placeholder-gray-500 ${readOnly ? 'cursor-not-allowed text-gray-300' : ''
+            className={`text-right w-full px-3 py-4 rounded-b-xl sm:rounded-tl-none sm:rounded-bl-none sm:rounded-tr-xl sm:rounded-br-xl text-2xl font-semibold bg-gray-800 outline-none text-gray-200 placeholder-gray-500 ${readOnly ? 'cursor-not-allowed text-gray-300' : ''
               }`}
           />
           {value && token?.price && (

@@ -17,7 +17,7 @@ export const TokenSelectorButton: React.FC<TokenSelectorButtonProps> = ({
   isLoading = false
 }) => (
   <button
-    className={`w-full p-3 rounded-l-xl bg-gray-800 cursor-pointer transition-all duration-200 flex items-center justify-between min-h-16 text-base ${disabled ? 'bg-gray-700 cursor-not-allowed opacity-60' : ''}`}
+    className={`w-full p-3 rounded-t-xl sm:rounded-tl-xl sm:rounded-bl-xl sm:rounded-tr-none sm:rounded-br-none bg-gray-800 cursor-pointer transition-all duration-200 flex items-center justify-between min-h-16 text-base ${disabled ? 'bg-gray-700 cursor-not-allowed opacity-60' : ''}`}
     onClick={onClick}
     disabled={disabled || isLoading}
     type="button"

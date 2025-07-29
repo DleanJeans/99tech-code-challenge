@@ -152,7 +152,7 @@ const CryptoSwapForm: React.FC = () => {
   const isFormComplete = isFormValid(formData);
 
   return (
-    <div className="max-w-lg mx-auto card">
+    <div className="max-w-lg mx-auto bg-gray-800 rounded-xl shadow-soft p-6">
       {loading ? (
         <LoadingState />
       ) : error ? (
@@ -171,7 +171,7 @@ const CryptoSwapForm: React.FC = () => {
               isOverLimit={isAmountOverLimit(formData)}
               maxAmountUSD={config.maxAmountUSD}
               transitionClasses={isSwapping
-                ? 'transition-all duration-500 ease-in-out transform translate-y-34'
+                ? 'transition-all duration-500 ease-in-out transform translate-y-50 sm:translate-y-34'
                 : 'transition-none'
               }
             />
@@ -192,7 +192,7 @@ const CryptoSwapForm: React.FC = () => {
               label="Amount to receive"
               excludeToken={formData.fromToken}
               transitionClasses={isSwapping
-                ? 'transition-all duration-500 ease-in-out transform -translate-y-34'
+                ? 'transition-all duration-500 ease-in-out transform -translate-y-50 sm:-translate-y-34'
                 : 'transition-none'
               }
             />
