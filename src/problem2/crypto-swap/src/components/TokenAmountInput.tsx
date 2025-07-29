@@ -126,16 +126,16 @@ const TokenAmountInput: React.FC<AmountInputProps> = ({
           {value && token?.price && (
             <div className="absolute bottom-1 right-3 text-xs text-gray-400">
               {isOverLimit ? (
-                <>
+                <span className="text-red-400">
                   Max:{' '}
                   <button
                     type="button"
                     onClick={handleMaxClick}
-                    className="hover:text-violet-400 transition-colors cursor-pointer underline decoration underline-offset-2"
+                    className="text-red-400 hover:text-red-300 transition-colors cursor-pointer underline decoration underline-offset-2"
                   >
                     {formatMaxAmountDisplay(token.price)}
                   </button>
-                </>
+                </span>
               ) : (
                 formatDisplayValue(value, token.price)
               )}

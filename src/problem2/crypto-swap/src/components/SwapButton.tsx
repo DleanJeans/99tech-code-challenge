@@ -25,7 +25,7 @@ const SwapButton: React.FC<SwapButtonProps> = ({
         onClick={handleClick}
         className={`w-12 h-8 rounded-full bg-gray-800 border-3 border-gray-600 flex items-center justify-center ${disabled
           ? 'opacity-40'
-          : 'hover:border-blue-500'
+          : 'hover:border-emerald-500'
           }`}
         disabled={disabled}
       >

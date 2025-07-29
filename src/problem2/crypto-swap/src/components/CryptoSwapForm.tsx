@@ -217,7 +217,7 @@ const CryptoSwapForm: React.FC = () => {
             type="submit"
             className={`w-full py-4 rounded-xl font-semibold text-lg relative overflow-hidden ${isSubmitting || !isFormComplete
               ? 'bg-gray-500 cursor-not-allowed'
-              : 'bg-violet-800 hover:bg-violet-700 text-white'
+              : 'bg-emerald-500 hover:bg-emerald-600 text-white'
               }`}
             disabled={isSubmitting || !isFormComplete}
           >

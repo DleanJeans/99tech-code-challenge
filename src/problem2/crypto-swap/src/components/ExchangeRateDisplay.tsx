@@ -16,7 +16,7 @@ const ExchangeRateDisplay: React.FC<ExchangeRateDisplayProps> = ({
   if (rate <= 0) return null;
 
   return (
-    <div className={`text-center py-3 bg-gray-800 rounded-xl text-sm text-blue-300 font-medium border border-gray-700 ${className}`}>
+    <div className={`text-center py-3 bg-gray-800 rounded-xl text-sm text-emerald-300 font-medium border border-gray-700 ${className}`}>
       1 {fromSymbol} = {rate.toFixed(8)} {toSymbol}
     </div>
   );

@@ -10,7 +10,7 @@ const LoadingState: React.FC<LoadingStateProps> = ({
   className = ""
 }) => (
   <div className={`flex flex-col items-center justify-center py-12 text-center ${className}`}>
-    <div className="w-8 h-8 border-3 border-gray-700 border-t-blue-400 rounded-full mb-4 animate-spin"></div>
+    <div className="w-8 h-8 border-3 border-gray-700 border-t-emerald-400 rounded-full mb-4 animate-spin"></div>
     <p className="text-gray-300">{message}</p>
   </div>
 );
@@ -31,7 +31,7 @@ const ErrorState: React.FC<ErrorStateProps> = ({
     {onRetry && (
       <button
         onClick={onRetry}
-        className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg text-sm"
+        className="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 px-6 rounded-lg text-sm"
       >
         Retry
       </button>
