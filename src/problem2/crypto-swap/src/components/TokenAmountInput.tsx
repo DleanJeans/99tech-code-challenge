@@ -110,6 +110,7 @@ const TokenAmountInput: React.FC<AmountInputProps> = ({
             disabled={false}
             isOpen={isOpen}
             onClick={handleButtonClick}
+            isLoading={tokens.length === 0}
           />
         </div>
         <div className={`flex-1 relative ${transitionClasses}`}>

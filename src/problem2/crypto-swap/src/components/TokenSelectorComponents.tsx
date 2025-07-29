@@ -6,18 +6,20 @@ interface TokenSelectorButtonProps {
   disabled: boolean;
   isOpen: boolean;
   onClick: () => void;
+  isLoading?: boolean;
 }
 
 export const TokenSelectorButton: React.FC<TokenSelectorButtonProps> = ({
   selectedToken,
   disabled,
   isOpen,
-  onClick
+  onClick,
+  isLoading = false
 }) => (
   <button
     className={`w-full p-3 rounded-l-xl bg-gray-800 cursor-pointer transition-all duration-200 flex items-center justify-between min-h-16 text-base ${disabled ? 'bg-gray-700 cursor-not-allowed opacity-60' : ''}`}
     onClick={onClick}
-    disabled={disabled}
+    disabled={disabled || isLoading}
     type="button"
     aria-expanded={isOpen}
     aria-haspopup="listbox"
@@ -25,7 +27,9 @@ export const TokenSelectorButton: React.FC<TokenSelectorButtonProps> = ({
     {selectedToken ? (
       <TokenDisplay token={selectedToken} />
     ) : (
-      <span className="text-gray-500 text-base">Select token</span>
+      <span className="text-gray-500 text-base">
+        {isLoading ? "Loading..." : "Select token"}
+      </span>
     )}
     <ChevronIcon isOpen={isOpen} />
   </button>
