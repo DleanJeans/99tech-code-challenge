@@ -1,3 +1,7 @@
+* {
+  font-family: 'Outfit', sans-serif;
+}
+
 body {
   background-color: oklch(13% 0.028 261.692);
 }
