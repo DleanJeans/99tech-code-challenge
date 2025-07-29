@@ -45,7 +45,7 @@ const WalletPage: React.FC<Props> = (props: Props) => {
   }, [balances, prices]);
 
   const rows = formattedBalances.map((balance: FormattedWalletBalance) => (
-    < WalletRow
+    <WalletRow
       className={classes.row}
       key={`${balance.blockchain}-${balance.currency}`} // use blockchain and currency as key to avoid rendering issues
       amount={balance.amount}

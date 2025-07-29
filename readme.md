@@ -1,8 +1,10 @@
 # Problem 1
 
-## Solution: [sum\_to\_n.js](src%5Cproblem1%5Csum_to_n.js)
+## Solution: [sum/_to/_n.js](src/problem1/sum_to_n.js)
 
-Has Vitest for these test cases:
+- works with negative `n`
+
+Includes Vitest coverage for the following cases:
 ```
 ✓ should return 1 for n = 1  
 ✓ should return 3 for n = 2 (1 + 2)  
@@ -30,6 +32,9 @@ Has Vitest for these test cases:
 - **React**
 - **TypeScript**
 
+## Screenshot
+![Screenshot](src/problem2/SCREENSHOT.png)
+
 # Problem 3
-## Solution: [EXPLANATION.md](src\problem3\EXPLANATION.md)
-## Code: [refactored.tsx](src\problem3\refactored.tsx)
+## Solution: [EXPLANATION.md](src/problem3/EXPLANATION.md)
+## Code: [refactored.tsx](src/problem3/refactored.tsx)
