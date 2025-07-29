@@ -1,6 +1,6 @@
 # Problem 1
 
-## Solution: [sum/_to/_n.js](src/problem1/sum_to_n.js)
+## Solution: [sum_to_n.js](src/problem1/sum_to_n.js)
 
 - works with negative `n`
 
@@ -27,10 +27,11 @@ Includes Vitest coverage for the following cases:
 ## Solution: [crypto-swap](src/problem2/crypto-swap)
 
 ## Tech Stack
-- **Vite**
-- **UnoCSS**
-- **React**
-- **TypeScript**
+
+*   Vite
+*   UnoCSS
+*   React
+*   TypeScript
 
 ## Screenshot
 ![Screenshot](src/problem2/SCREENSHOT.png)

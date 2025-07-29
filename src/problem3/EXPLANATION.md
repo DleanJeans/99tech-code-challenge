@@ -43,11 +43,11 @@ const getPriority = (blockchain: string): number => {
 - `balance.amount <= 0` returns only negative balances → flip to `balance.amount > 0` to display positive balances
 - nested if statements inside `filter()` can be simplified into an one-liner expression
 - sorting in descending order → can be written as `rightPriority - leftPriority` instead of using verbose `if else` statements
-- `formattedBalances` is unused and should be chained after `.map`
+- `formattedBalances` is unused and can be chained after `.map`
 
 ## Before
 ```tsx
-	const sortedBalances = useMemo(() => {
+  const sortedBalances = useMemo(() => {
     return balances.filter((balance: WalletBalance) => {
       const balancePriority = getPriority(balance.blockchain);
       if (lhsPriority > -99) { // lhsPriority should be balancePriority
