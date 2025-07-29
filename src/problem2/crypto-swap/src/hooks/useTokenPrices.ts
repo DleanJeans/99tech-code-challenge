@@ -110,9 +110,10 @@ const getTokenInfo = async (symbol: string): Promise<{ symbol: string; icon: str
   const primaryUrl = `${TOKEN_ICONS_BASE_URL}/${symbol}.svg`;
 
   try {
-    const response = await fetch(primaryUrl, { method: 'HEAD' });
+    const response = await fetch(primaryUrl);
     if (response.ok) {
-      return { symbol, icon: primaryUrl };
+      const imageData = await response.text(); // Get SVG as text
+      return { symbol, icon: imageData };
     }
   } catch {
     // If primary URL fails, continue to fallback
@@ -120,7 +121,18 @@ const getTokenInfo = async (symbol: string): Promise<{ symbol: string; icon: str
 
   const fallbackSymbol = symbol.replace(/^ST/g, 'st').replace(/^R/g, 'r');
   const fallbackUrl = `${TOKEN_ICONS_BASE_URL}/${fallbackSymbol}.svg`;
-  return { symbol: fallbackSymbol, icon: fallbackUrl };
+
+  try {
+    const fallbackResponse = await fetch(fallbackUrl);
+    if (fallbackResponse.ok) {
+      const imageData = await fallbackResponse.text();
+      return { symbol: fallbackSymbol, icon: imageData };
+    }
+  } catch {
+    // If fallback also fails, return empty icon data
+  }
+
+  return { symbol: fallbackSymbol, icon: '' };
 };
 
 const createTokensFromPrices = async (latestPrices: Map<string, TokenPrice>): Promise<Token[]> => {
