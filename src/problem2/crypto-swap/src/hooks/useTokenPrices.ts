@@ -12,31 +12,7 @@ export const useTokenPrices = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const processTokens = async () => {
-      if (tokenPrices.length === 0) {
-        setTokens([]);
-        return;
-      }
 
-      const latestPrices = getLatestPrices(tokenPrices);
-      const processedTokens = await createTokensFromPrices(latestPrices);
-      setTokens(processedTokens);
-    };
-
-    processTokens();
-  }, [tokenPrices]);
-
-  const priceMap = useMemo(() => {
-    const map = new Map<string, number>();
-    tokens.forEach((token: Token) => {
-      if (token.price !== undefined) {
-        map.set(token.symbol, token.price);
-      }
-    });
-    return map;
-  }, [tokens]);
-
-  useEffect(() => {
     const fetchPrices = async () => {
       try {
         setLoading(true);
@@ -66,6 +42,35 @@ export const useTokenPrices = () => {
 
     fetchPrices();
   }, []);
+
+  useEffect(() => {
+    const processTokens = async () => {
+      if (tokenPrices.length === 0) {
+        setTokens([]);
+        return;
+      }
+
+      const latestPrices = getLatestPrices(tokenPrices);
+      const initialTokens = await createTokensFromPrices(latestPrices);
+      setTokens(initialTokens);
+
+      setTimeout(async () => {
+        const tokensWithIcons = await prefetchIconDataIntoTokens(initialTokens);
+        setTokens(tokensWithIcons);
+      }, 0);
+    };
+    processTokens();
+  }, [tokenPrices]);
+
+  const priceMap = useMemo(() => {
+    return new Map(
+      tokens
+        .filter((token: Token) => token.price !== undefined)
+        .map((token: Token) => [token.symbol, token.price!])
+    );
+  }, [tokens]);
+
+
 
   const getTokenPrice = useCallback((symbol: string): number | undefined => {
     return priceMap.get(symbol);
@@ -106,49 +111,61 @@ const getLatestPrices = (prices: TokenPrice[]): Map<string, TokenPrice> => {
   return latestPricesMap;
 };
 
-const getTokenInfo = async (symbol: string): Promise<{ symbol: string; icon: string }> => {
-  const primaryUrl = `${TOKEN_ICONS_BASE_URL}/${symbol}.svg`;
+const prefetchIconDataIntoTokens = async (tokens: Token[]): Promise<Token[]> => {
+  return Promise.all(
+    tokens.map(async (token) => {
+      if (!token.icon.startsWith('https')) {
+        return token;
+      }
+
+      try {
+        const iconInfo = await fetchTokenInfo(token.symbol);
+        return {
+          ...token,
+          ...iconInfo,
+        };
+      } catch (error) {
+        console.warn(`Failed to fetch icon data for ${token.symbol}:`, error);
+        return token;
+      }
+    })
+  );
+};
+
+const fetchTokenInfo = async (symbol: string): Promise<{ symbol: string; icon: string }> => {
+  const url = getTokenIconUrl(symbol);
 
   try {
-    const response = await fetch(primaryUrl);
+    const response = await fetch(url);
     if (response.ok) {
-      const imageData = await response.text(); // Get SVG as text
+      const imageData = await response.text();
       return { symbol, icon: imageData };
     }
   } catch {
-    // If primary URL fails, continue to fallback
+    // If default URL fails, continue to fallback
   }
 
   const fallbackSymbol = symbol.replace(/^ST/g, 'st').replace(/^R/g, 'r');
-  const fallbackUrl = `${TOKEN_ICONS_BASE_URL}/${fallbackSymbol}.svg`;
-
-  try {
-    const fallbackResponse = await fetch(fallbackUrl);
-    if (fallbackResponse.ok) {
-      const imageData = await fallbackResponse.text();
-      return { symbol: fallbackSymbol, icon: imageData };
-    }
-  } catch {
-    // If fallback also fails, return empty icon data
+  if (fallbackSymbol !== symbol) {
+    return fetchTokenInfo(fallbackSymbol);
   }
 
-  return { symbol: fallbackSymbol, icon: '' };
+  return { symbol, icon: url };
 };
 
+const getTokenIconUrl = (symbol: string): string => `${TOKEN_ICONS_BASE_URL}/${symbol}.svg`;
+
 const createTokensFromPrices = async (latestPrices: Map<string, TokenPrice>): Promise<Token[]> => {
-  const tokenPromises = Array.from(latestPrices.entries())
-    .map(async ([symbol, priceData]) => {
-      const info = await getTokenInfo(symbol);
+  const tokens = Array.from(latestPrices.entries()).map(([symbol, priceData]) => ({
+    symbol,
+    icon: getTokenIconUrl(symbol),
+    price: priceData.price
+  }));
 
-      return {
-        symbol: info.symbol,
-        icon: info.icon,
-        price: priceData.price
-      }
-    });
+  return sortTokensByPopularity(tokens);
+};
 
-  const tokens = await Promise.all(tokenPromises);
-
+const sortTokensByPopularity = (tokens: Token[]): Token[] => {
   return tokens.sort((a, b) => {
     const popularityA = getPopularityIndex(a.symbol);
     const popularityB = getPopularityIndex(b.symbol);
