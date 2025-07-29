@@ -26,6 +26,8 @@ Includes Vitest coverage for the following cases:
 
 ## Solution: [crypto-swap](src/problem2/crypto-swap)
 
+## Try it out: [Vercel App](https://crypto-swap-hazel.vercel.app/)
+
 ## Tech Stack
 
 *   Vite
