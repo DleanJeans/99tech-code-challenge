@@ -1,10 +1,7 @@
-Visit this [Notion page](https://dleanjeans.notion.site/Coding-Challenge-Problem-3-23d90f73c70780cbaa69dc399b2a01ae?source=repo) to view the Before/After code side by side
-
-# `getPriority`
-
-- is being redefined every render → `useCallback`
-- uses clunky `switch case` → can be replaced with Record
-- `-99` is a magic number → assign to a constant
+# 1. getPriority
+- is redefined every render → bring out of `WalletPage`
+- uses clunky `switch case` → replace with `Record` dictionary (easier for future API integration)
+- `-99` is a magic number and referenced twice → assign to a constant
 
 ## Before
 ```tsx
@@ -28,7 +25,7 @@ Visit this [Notion page](https://dleanjeans.notion.site/Coding-Challenge-Problem
 ## After
 ```tsx
 const NO_PRIORITY = -99;
-const PRIORITY_DB = {
+const PRIORITY_DB: Record<string, number> = {
   'Osmosis': 100,
   'Ethereum': 50,
   'Arbitrum': 30,
@@ -36,25 +33,16 @@ const PRIORITY_DB = {
   'Neo': 20
 }
 
-const WalletPage: React.FC<Props> = (props: Props) => {
-  const { children, ...rest } = props;
-  const balances = useWalletBalances();
-  const prices = usePrices();
-	
-	const getPriority = useCallback((blockchain: string): number => {
-    return PRIORITY_DB[blockchain] || NO_PRIORITY;
-  }, [PRIORITY_DB]);
-  
-  ...
-}
+const getPriority = (blockchain: string): number => {
+  return PRIORITY_DB[blockchain] || NO_PRIORITY;
+};
 ```
 
-# `sortedBalances` / `formattedBalances`
-
-- `lhsPriority` was not declared, should be `balancePriority`
-- `balance.amount <= 0` why are we showing empty balances? → flip to `balance.amount > 0`  to display positive balances
-- nested if statements inside `filter()` can be nested into an one-liner expression
-- sorting in descending order → can be written as `rightPriority - leftPriority` instead of using `if else`  statements
+# 2. sortedBalances & formattedBalances
+- `lhsPriority` was never declared before, typo from `balancePriority`
+- `balance.amount <= 0` returns only negative balances → flip to `balance.amount > 0` to display positive balances
+- nested if statements inside `filter()` can be simplified into an one-liner expression
+- sorting in descending order → can be written as `rightPriority - leftPriority` instead of using verbose `if else` statements
 - `formattedBalances` is unused and should be chained after `.map`
 
 ## Before
@@ -62,10 +50,10 @@ const WalletPage: React.FC<Props> = (props: Props) => {
 	const sortedBalances = useMemo(() => {
     return balances.filter((balance: WalletBalance) => {
       const balancePriority = getPriority(balance.blockchain);
-      if (lhsPriority > -99) { // lhsPriority -> should be balancePriority
-          if (balance.amount <= 0) { // filtering out positive balances?
-            return true; // if statements can be nested
-          }
+      if (lhsPriority > -99) { // lhsPriority should be balancePriority
+        if (balance.amount <= 0) { // filtering out positive balances?
+          return true; // nestd if statements can be simplified
+        }
       }
       return false
     }).sort((lhs: WalletBalance, rhs: WalletBalance) => {
@@ -85,29 +73,21 @@ const WalletPage: React.FC<Props> = (props: Props) => {
       formatted: balance.amount.toFixed()
     }
   })
+
+  const rows = sortedBalances.map((balance: FormattedWalletBalance, index: number) => { // doesn't use formattedBalances
 ```
 ## After
 ```tsx
-	const formattedBalances = useMemo(() => {
+  const formattedBalances = useMemo(() => {
     return balances.filter((balance: WalletBalance) => {
       const balancePriority = getPriority(balance.blockchain);
       return balancePriority > NO_PRIORITY && balance.amount > 0;
     })
-    
-    
-    
-    
     .sort((left: WalletBalance, right: WalletBalance) => {
       const leftPriority = getPriority(left.blockchain);
       const rightPriority = getPriority(right.blockchain);
       return rightPriority - leftPriority;
     })
-    
-    
-    
-    
-    
-    
     .map((balance: WalletBalance) => ({
         ...balance,
         formatted: balance.amount.toFixed()
@@ -116,8 +96,7 @@ const WalletPage: React.FC<Props> = (props: Props) => {
   }, [balances, prices]);
 ```
 
-# `rows`
-
+# 3. WalletRows
 - using `index` as `key` can cause rendering issues if `PRIORITY_DB` changes → use `balance.currency`  or `balance.blockchain`
 - `usdValue` can be memoized → add `usdValue` to `FormattedWalletBalance`  and to `formattedBalances = useMemo()` block
 
@@ -143,12 +122,19 @@ interface FormattedWalletBalance {
   formatted: string;
   usdValue: number; // new property
 }
+```
 
-  ...
-
-	const formattedBalances = useMemo(() => {
-		return balances
-		...
+```tsx
+  const formattedBalances = useMemo(() => {
+    return balances.filter((balance: WalletBalance) => {
+      const balancePriority = getPriority(balance.blockchain);
+      return balancePriority > NO_PRIORITY && balance.amount > 0;
+    })
+    .sort((left: WalletBalance, right: WalletBalance) => {
+      const leftPriority = getPriority(left.blockchain);
+      const rightPriority = getPriority(right.blockchain);
+      return rightPriority - leftPriority;
+    })
     .map((balance: WalletBalance) => ({
         ...balance,
         formatted: balance.amount.toFixed(),
@@ -156,16 +142,16 @@ interface FormattedWalletBalance {
       }) as FormattedWalletBalance
     );
   }, [balances, prices]);
-  
-  ...
-  
+```
+
+```tsx
   const rows = formattedBalances.map((balance: FormattedWalletBalance) => {
     return (
       <WalletRow 
         className={classes.row}
-        key={balance.currency} // to place index
+        key={`${balance.blockchain}-${balance.currency}`} // new key
         amount={balance.amount}
-        usdValue={balance.usdValue}
+        usdValue={balance.usdValue} // use memoized usdValue
         formattedAmount={balance.formatted}
       />
     )
